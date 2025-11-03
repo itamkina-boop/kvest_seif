@@ -1,3 +1,6 @@
+Вот исправленный код с правильным 17-значным шифром:
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -23,7 +26,7 @@
         }
         
         .container {
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
             text-align: center;
         }
@@ -64,16 +67,17 @@
             justify-content: center;
             gap: 5px;
             margin: 20px 0;
+            flex-wrap: wrap;
         }
         
         .code-digit {
-            width: 30px;
-            height: 40px;
+            width: 25px;
+            height: 35px;
             border: 2px solid #d4af37;
             background: #000;
             color: #d4af37;
             text-align: center;
-            font-size: 18px;
+            font-size: 16px;
             border-radius: 5px;
         }
         
@@ -160,15 +164,25 @@
             line-height: 1.5;
         }
         
+        .code-hint {
+            font-size: 14px;
+            color: #a1887f;
+            margin: 10px 0;
+        }
+        
         @media (max-width: 480px) {
             .code-digit {
-                width: 25px;
-                height: 35px;
-                font-size: 16px;
+                width: 22px;
+                height: 32px;
+                font-size: 14px;
             }
             
             .safe {
                 padding: 20px 15px;
+            }
+            
+            .container {
+                max-width: 100%;
             }
         }
     </style>
@@ -181,10 +195,11 @@
             <div class="safe">
                 <div class="safe-door">
                     <div class="dial">S</div>
-                    <p>Введите 11-значный код сейфа:</p>
+                    <p>Введите 17-значный код сейфа:</p>
                     <div class="code-input" id="codeInputs">
                         <!-- Цифры будут добавлены через JS -->
                     </div>
+                    <p class="code-hint">Код: 17 цифр из истории Воронежской губернии</p>
                     <button onclick="checkCode()">Открыть сейф</button>
                     <div id="errorMsg" class="hidden" style="color: #ff4444; margin: 10px 0;">
                         Неверный код! Попробуйте снова.
@@ -264,19 +279,22 @@
     </div>
 
     <script>
+        // Правильный 17-значный код
+        const CORRECT_CODE = '66751649552322610';
+        
         // Инициализация полей для ввода кода
         function initCodeInputs() {
             const codeInputs = document.getElementById('codeInputs');
             codeInputs.innerHTML = '';
             
-            for (let i = 0; i < 11; i++) {
+            for (let i = 0; i < 17; i++) {
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.maxLength = 1;
                 input.className = 'code-digit';
                 input.addEventListener('input', function(e) {
                     // Автопереход к следующему полю
-                    if (e.target.value && i < 10) {
+                    if (e.target.value && i < 16) {
                         codeInputs.children[i + 1].focus();
                     }
                     
@@ -287,6 +305,16 @@
                 input.addEventListener('keydown', function(e) {
                     // Переход назад при нажатии Backspace
                     if (e.key === 'Backspace' && !e.target.value && i > 0) {
+                        codeInputs.children[i - 1].focus();
+                    }
+                    
+                    // Переход вперед при нажатии стрелки вправо
+                    if (e.key === 'ArrowRight' && i < 16) {
+                        codeInputs.children[i + 1].focus();
+                    }
+                    
+                    // Переход назад при нажатии стрелки влево
+                    if (e.key === 'ArrowLeft' && i > 0) {
                         codeInputs.children[i - 1].focus();
                     }
                 });
@@ -309,10 +337,7 @@
                 enteredCode += input.value;
             }
             
-            // ЗАМЕНИТЕ НА РЕАЛЬНЫЙ 11-ЗНАЧНЫЙ КОД
-            const correctCode = '12345678901'; // Пример кода
-            
-            if (enteredCode === correctCode) {
+            if (enteredCode === CORRECT_CODE) {
                 document.getElementById('codeScreen').classList.add('hidden');
                 document.getElementById('safeContent').classList.remove('hidden');
             } else {
