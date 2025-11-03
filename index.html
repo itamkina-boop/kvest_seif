@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тайны старинного сейфа</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            background: #1a1a1a;
+            color: #d4af37;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .safe {
+            background: #2d2d2d;
+            border: 3px solid #d4af37;
+            border-radius: 20px;
+            padding: 30px 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+        
+        .safe-door {
+            background: #3a3a3a;
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .dial {
+            background: #000;
+            border: 3px solid #d4af37;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #d4af37;
+        }
+        
+        .code-input {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 20px 0;
+        }
+        
+        .code-digit {
+            width: 30px;
+            height: 40px;
+            border: 2px solid #d4af37;
+            background: #000;
+            color: #d4af37;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        
+        button {
+            background: #d4af37;
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .artifact {
+            max-width: 300px;
+            margin: 20px auto;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .artifact img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .artifact-caption {
+            background: #2d2d2d;
+            padding: 10px;
+            font-style: italic;
+            color: #d4af37;
+        }
+        
+        .document {
+            background: #f5e8c8;
+            color: #2c1810;
+            padding: 20px;
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .name-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #8b4513;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        h1 {
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        h2 {
+            color: #d4af37;
+            margin: 20px 0;
+        }
+        
+        h3 {
+            color: #8b4513;
+            margin: 15px 0;
+        }
+        
+        p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 480px) {
+            .code-digit {
+                width: 25px;
+                height: 35px;
+                font-size: 16px;
+            }
+            
+            .safe {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Экран ввода кода -->
+        <div id="codeScreen">
+            <h1>🔐 Тайны старинного сейфа</h1>
+            <div class="safe">
+                <div class="safe-door">
+                    <div class="dial">S</div>
+                    <p>Введите 11-значный код сейфа:</p>
+                    <div class="code-input" id="codeInputs">
+                        <!-- Цифры будут добавлены через JS -->
+                    </div>
+                    <button onclick="checkCode()">Открыть сейф</button>
+                    <div id="errorMsg" class="hidden" style="color: #ff4444; margin: 10px 0;">
+                        Неверный код! Попробуйте снова.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран с содержимым сейфа -->
+        <div id="safeContent" class="hidden">
+            <h1>🎉 Сейф открыт!</h1>
+            
+            <!-- Ввод имени -->
+            <div id="nameInputSection">
+                <h2>Введите ваше имя для грамоты:</h2>
+                <input type="text" id="userName" class="name-input" placeholder="Ваше имя" maxlength="50">
+                <button onclick="generateDocuments()">Создать документы</button>
+            </div>
+
+            <!-- Артефакт -->
+            <div id="artifactSection" class="hidden">
+                <h2>Найденный артефакт:</h2>
+                <div class="artifact">
+                    <!-- ЗАМЕНИТЕ НА РЕАЛЬНОЕ ИЗОБРАЖЕНИЕ -->
+                    <img src="scythian-comb.jpg" alt="Реконструкция чаши с грифоном. Раскопки скифского могильника «Частые курганы» в Воронеже П.Д. Либеровым в 1954 г." onerror="this.style.display='none'; document.getElementById('placeholder').style.display='block';">
+                    <div id="placeholder" style="background: #8b4513; color: #d4af37; padding: 100px 20px; display: none;">
+                        🏺 Реконструкция чаши с грифоном. Раскопки скифского могильника «Частые курганы» в Воронеже П.Д. Либеровым в 1954 г.
+                    </div>
+                    <div class="artifact-caption">
+                        Реконструкция чаши с грифоном. Раскопки скифского могильника «Частые курганы» в Воронеже П.Д. Либеровым в 1954 г.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Грамота -->
+            <div id="diplomaSection" class="hidden">
+                <h2>Ваша грамота:</h2>
+                <div class="document">
+                    <h3 style="text-align: center;">ДИПЛОМ ИССЛЕДОВАТЕЛЯ</h3>
+                    <p style="text-align: center;"><strong>Воронежский областной краеведческий музей</strong></p>
+                    <br>
+                    <p>Настоящим удостоверяется, что</p>
+                    <p style="text-align: center; font-size: 18px; font-weight: bold;" id="diplomaName"></p>
+                    <p>успешно раскрыл(а) тайну старинного сейфа и проявил(а) выдающиеся способности в исследовании истории Воронежской губернии.</p>
+                    <br>
+                    <p>Присваивается звание <strong>"Почётный историк-архивист"</strong></p>
+                    <br>
+                    <div style="border-top: 1px solid #8b4513; padding-top: 10px;">
+                        <p>Хранитель музейных тайн</p>
+                        <p>Дата: <span id="diplomaDate"></span></p>
+                    </div>
+                </div>
+                <button onclick="downloadDiploma()">📥 Скачать грамоту</button>
+            </div>
+
+            <!-- Легенда -->
+            <div id="legendSection" class="hidden">
+                <h2>Легенда о золоте скифов:</h2>
+                <div class="document">
+                    <h3 style="text-align: center;">ТАЙНА ЗОЛОТА СКИФОВ</h3>
+                    <br>
+                    <p>Воронежская земля хранит множество загадок, но одна из самых интригующих связана с легендарным золотом скифов.</p>
+                    <br>
+                    <p><strong>Исторический контекст:</strong> Скифские племена, населявшие эти земли в VII-III веках до нашей эры, славились своими золотыми украшениями. Мастера создавали настоящие шедевры: гребни, подвески, ритоны, украшенные сложными орнаментами и изображениями животных.</p>
+                    <br>
+                    <p><strong>Археологические находки:</strong> На территории Воронежской области были обнаружены уникальные скифские курганы. Самые значительные находки включают золотые украшения с изображениями оленей, грифонов и других мифических существ, характерных для скифского "звериного стиля".</p>
+                    <br>
+                    <p><strong>Загадка исчезновения:</strong> По легенде, когда скифам угрожала опасность, они спрятали свои главные сокровища в тайных местах. Многие искатели до сих пор пытаются разгадать эту многовековую тайну.</p>
+                    <br>
+                    <p>Найденный вами артефакт — лишь малая часть великого наследия скифской культуры, свидетельство высокого мастерства древних ювелиров и богатой истории нашего края.</p>
+                </div>
+                <button onclick="downloadLegend()">📥 Скачать легенду</button>
+            </div>
+
+            <button onclick="resetQuest()" style="margin-top: 20px;">🔄 Начать заново</button>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация полей для ввода кода
+        function initCodeInputs() {
+            const codeInputs = document.getElementById('codeInputs');
+            codeInputs.innerHTML = '';
+            
+            for (let i = 0; i < 11; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.maxLength = 1;
+                input.className = 'code-digit';
+                input.addEventListener('input', function(e) {
+                    // Автопереход к следующему полю
+                    if (e.target.value && i < 10) {
+                        codeInputs.children[i + 1].focus();
+                    }
+                    
+                    // Разрешаем только цифры
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    // Переход назад при нажатии Backspace
+                    if (e.key === 'Backspace' && !e.target.value && i > 0) {
+                        codeInputs.children[i - 1].focus();
+                    }
+                });
+                
+                codeInputs.appendChild(input);
+            }
+            
+            // Фокус на первое поле
+            if (codeInputs.firstChild) {
+                codeInputs.firstChild.focus();
+            }
+        }
+        
+        // Проверка кода
+        function checkCode() {
+            const codeInputs = document.getElementById('codeInputs').children;
+            let enteredCode = '';
+            
+            for (let input of codeInputs) {
+                enteredCode += input.value;
+            }
+            
+            // ЗАМЕНИТЕ НА РЕАЛЬНЫЙ 11-ЗНАЧНЫЙ КОД
+            const correctCode = '12345678901'; // Пример кода
+            
+            if (enteredCode === correctCode) {
+                document.getElementById('codeScreen').classList.add('hidden');
+                document.getElementById('safeContent').classList.remove('hidden');
+            } else {
+                document.getElementById('errorMsg').classList.remove('hidden');
+                // Очистка полей при ошибке
+                for (let input of codeInputs) {
+                    input.value = '';
+                }
+                codeInputs[0].focus();
+            }
+        }
+        
+        // Генерация документов
+        function generateDocuments() {
+            const userName = document.getElementById('userName').value.trim();
+            
+            if (!userName) {
+                alert('Пожалуйста, введите ваше имя');
+                return;
+            }
+            
+            // Заполняем грамоту
+            document.getElementById('diplomaName').textContent = userName;
+            document.getElementById('diplomaDate').textContent = new Date().toLocaleDateString('ru-RU');
+            
+            // Показываем все разделы
+            document.getElementById('nameInputSection').classList.add('hidden');
+            document.getElementById('artifactSection').classList.remove('hidden');
+            document.getElementById('diplomaSection').classList.remove('hidden');
+            document.getElementById('legendSection').classList.remove('hidden');
+        }
+        
+        // Скачивание грамоты
+        function downloadDiploma() {
+            const diplomaContent = document.getElementById('diplomaSection').querySelector('.document');
+            const userName = document.getElementById('userName').value.trim() || 'Исследователь';
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Грамота исследователя</title>
+                    <style>
+                        body { font-family: 'Times New Roman', serif; padding: 40px; }
+                        .document { border: 2px solid #8b4513; padding: 30px; max-width: 600px; margin: 0 auto; }
+                        h3 { text-align: center; color: #8b4513; }
+                        p { margin: 10px 0; line-height: 1.5; }
+                    </style>
+                </head>
+                <body>
+                    ${diplomaContent.outerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        // Скачивание легенды
+        function downloadLegend() {
+            const legendContent = document.getElementById('legendSection').querySelector('.document');
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Легенда о золоте скифов</title>
+                    <style>
+                        body { font-family: 'Times New Roman', serif; padding: 40px; }
+                        .document { border: 2px solid #8b4513; padding: 30px; max-width: 600px; margin: 0 auto; }
+                        h3 { text-align: center; color: #8b4513; }
+                        p { margin: 10px 0; line-height: 1.5; }
+                    </style>
+                </head>
+                <body>
+                    ${legendContent.outerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        // Сброс квеста
+        function resetQuest() {
+            document.getElementById('safeContent').classList.add('hidden');
+            document.getElementById('codeScreen').classList.remove('hidden');
+            document.getElementById('errorMsg').classList.add('hidden');
+            document.getElementById('userName').value = '';
+            document.getElementById('nameInputSection').classList.remove('hidden');
+            document.getElementById('artifactSection').classList.add('hidden');
+            document.getElementById('diplomaSection').classList.add('hidden');
+            document.getElementById('legendSection').classList.add('hidden');
+            initCodeInputs();
+        }
+        
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            initCodeInputs();
+        });
+    </script>
+</body>
+</html>
